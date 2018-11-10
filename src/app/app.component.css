@@ -1,0 +1,15 @@
+h1 {
+    font-weight: bold;
+    font-size: 40px;
+}
+
+div {
+    border: solid white;
+}
+button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100;
+}
+

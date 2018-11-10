@@ -1,0 +1,28 @@
+<div class="container">
+
+   
+
+  <div>
+
+   <div *ngIf="antwoorden.length">
+   <table class="table">
+       <thead>
+         <tr>
+            <th scope="col"><button class="btn">Rang</button></th>
+           <th scope="col"><button class="btn">Tafel</button></th>
+           <th scope="col"><button class="btn">Score</button></th>
+         </tr>
+       </thead>
+       <tbody>
+         <tr *ngFor='let tafel of tafels index as i'>
+           <td>{{i+1}}</td>
+           <td>{{tafel.tafel}}</td>
+           <td>{{tafel.score}}</td>
+       </tbody>
+     </table>
+   </div>
+   </div>
+   <button (click)='naarScore()' class="btn score">Vragen</button>
+   <div style="text-align:center">
+    <h5>Ontwikkeld door <a href="https://www.linkedin.com/in/vincent-reynaert-4495ab123/" target="_blank">VR</a></h5>
+  </div>

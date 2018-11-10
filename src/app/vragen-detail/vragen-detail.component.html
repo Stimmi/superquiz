@@ -1,0 +1,70 @@
+<div class="container">
+ <div class="row pijlen">
+  <div class="col-3">
+      <fa (click)='vorigeVraag()' name="arrow-circle-left" class="col-2" [class.nietWeergevenPijl]="!geefWeerPijl"></fa>
+      <fa name="fal fa-circle" class="col-2" [class.nietWeergevenPijl]="geefWeerPijl"></fa>
+  </div>
+  <div class="col-6" [class.shaker]="shaker"> 
+  <p>Vraag {{vraagNummer}}</p>
+  </div>  
+  <div class="col-3">
+      <fa (click)='volgendeVraag()' name="arrow-circle-right" class="col-2" [class.nietWeergevenPijl]="!geefWeerPijl"></fa>
+      <fa name="fal fa-circle" class="col-2" [class.nietWeergevenPijl]="geefWeerPijl"></fa>
+
+  </div>
+  </div>
+  <div class="row">
+      <h4 class="col-12">{{vraag}}</h4>
+  </div>
+  <div class="row" *ngIf="imagePath">
+    <img class="img-responsive" [src]="imagePath">
+  </div>
+
+  <div class="row" [class.nietWeergeven]="geefWeerLaden">
+    <fa name="spinner" animation="spin" class="col-1 offset-5"></fa>
+  </div>
+  <div>
+  <form (ngSubmit)="antwoordFunctie(antwoordForm)" #antwoordForm="ngForm" [class.nietWeergeven]="geefWeerForm">
+  <div class="form-group">
+    <div class="row">
+        <div class="col-8 offset-2">
+          <div class="row">
+            <input class="form-control" [value]="antwoordHTML" minlength="1" 
+            name="antwoordHTML" [(ngModel)]="antwoordHTML" placeholder="..." autocomplete="off">
+          </div>
+          <div class="row">
+            <button type="submit" class="col-12 btn" formmethod="POST">Antwoord
+            </button>
+          </div>
+        </div>
+    </div>
+  </div>
+</form>
+<div [class.nietWeergeven]="geefWeerOntv">
+    <p class="col-12 melding"><fa name="fas fa-check"></fa> Bedankt, antwoord ontvangen!</p>
+</div>
+<div *ngIf="antwoorden.length">
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col"><button class="btn">Tafel</button></th>
+        <th scope="col"><button class="btn">Juist</button></th>
+        <th scope="col"><button class="btn">Tijd</button></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor='let antwoord of antwoorden'>
+        <td>{{antwoord.tafel}}</td>
+        <td *ngIf="antwoord.juist"><fa name="fas fa-check-circle"></fa></td>
+        <td *ngIf="!antwoord.juist"><fa name="fas fa-window-close"></fa></td>
+        <td *ngIf="antwoord.juist">{{antwoord.tijdstip - eersteAntw | tijdsindicator}}
+          <fa *ngIf='!(antwoord.tijdstip - eersteAntw)' name="fas fa-trophy"></fa></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+<button (click)='naarScore()' class="btn score">Score</button>
+<div style="text-align:center">
+  <h5>Ontwikkeld door <a href="https://www.linkedin.com/in/vincent-reynaert-4495ab123/" target="_blank">VR</a></h5>
+</div>

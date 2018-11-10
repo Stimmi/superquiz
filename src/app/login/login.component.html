@@ -1,0 +1,23 @@
+<form (ngSubmit)="login(loginForm)" #loginForm="ngForm">
+    <div class="container">
+    <div class="row">
+      <p class="col-8 offset-2 btn">Selecteer je team</p>
+    </div>
+    <div class="form-group">
+        <div class="row select">
+            <select class="col-8 offset-2 btn" [(ngModel)]="geselecteerdTeam" name="geselecteerdTeam">
+                <option *ngFor='let team of teams'>{{team.tafel}}</option>
+            </select>
+        </div>
+        <div class="row">
+            <input autocomplete="off" type="password" class="form-control col-8 offset-2" id="inputPassword" placeholder="Paswoord" [(ngModel)]="password" name="password">
+          </div>
+          <div class="row">
+            <button type="submit" class="col-8 offset-2 btn" formmethod="POST" style="margin-bottom: 15px">Ga Verder</button>
+          </div>
+    </div>
+  </div>
+  <div style="text-align:center">
+    <h5>Ontwikkeld door <a href="https://www.linkedin.com/in/vincent-reynaert-4495ab123/" target="_blank">VR</a></h5>
+  </div>
+  </form>
