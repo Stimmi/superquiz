@@ -6,3 +6,13 @@ export interface Antwoord {
     juist: boolean;
 
 }
+
+export interface Anker {
+    anker: number;
+    invulLabel: boolean;
+}
+
+export interface GoogleTijdstip {
+    seconds: number;
+    nanoseconds: number;
+}

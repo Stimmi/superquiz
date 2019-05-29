@@ -1,0 +1,30 @@
+p {
+    text-align: center;
+}
+
+
+img {
+    border-radius: 50%;
+    padding: 5px;
+    margin: 0 auto;
+    max-height: 85px;
+    
+}
+
+/*
+.omgekeerd {
+    -ms-transform: rotate(180deg); 
+    -webkit-transform: rotate(180deg); 
+    transform: rotate(180deg);
+}
+ */
+
+.omgekeerd {
+
+    -webkit-animation:spin 4s linear infinite;
+    -moz-animation:spin 4s linear infinite;
+    animation:spin 4s linear infinite;
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }

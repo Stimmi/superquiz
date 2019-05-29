@@ -16,6 +16,7 @@ import { TijdsIndicator } from './services/tijd.pipe';
 import {MatSelectModule} from '@angular/material/select';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { ScoreComponent } from './score/score.component';
+import { AdminComponent } from './admin/admin.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { ScoreComponent } from './score/score.component';
     LoginComponent,
     VragenDetailComponent,
     TijdsIndicator,
-    ScoreComponent
+    ScoreComponent,
+    AdminComponent
       ],
   imports: [
     BrowserModule,
@@ -37,10 +39,11 @@ import { ScoreComponent } from './score/score.component';
     AngularFirestoreModule,
     RouterModule.forRoot([
       {path: 'login', component: LoginComponent},
-      {path: 'welkom/:vraagNummer', component: VragenDetailComponent}, 
+      {path: 'vragen', component: VragenDetailComponent}, 
       {path: 'score', component: ScoreComponent},
+      {path: 'badmin', component: AdminComponent},
       {path: '', redirectTo: 'login', pathMatch: 'full'}, // standaard naar login pagina
-      {path: 'welkom', redirectTo: 'welkom/1'},
+      {path: 'welkom', component: WelkomComponent},
       {path: '**', redirectTo: 'login', pathMatch: 'full'} // indien foute route
     ])
   ],

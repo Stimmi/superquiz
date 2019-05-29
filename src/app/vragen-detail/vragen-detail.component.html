@@ -1,22 +1,23 @@
 <div class="container">
- <div class="row pijlen">
+ <!--<div class="row pijlen">
   <div class="col-3">
       <fa (click)='vorigeVraag()' name="arrow-circle-left" class="col-2" [class.nietWeergevenPijl]="!geefWeerPijl"></fa>
       <fa name="fal fa-circle" class="col-2" [class.nietWeergevenPijl]="geefWeerPijl"></fa>
+  </div>-->
+  <div class="row titelVraag" [class.shaker]="shaker"> 
+  <h6 class="col-12">Vraag {{vraagNummer}}</h6>
   </div>
-  <div class="col-6" [class.shaker]="shaker"> 
-  <p>Vraag {{vraagNummer}}</p>
-  </div>  
-  <div class="col-3">
+  <!--<div class="col-3">
       <fa (click)='volgendeVraag()' name="arrow-circle-right" class="col-2" [class.nietWeergevenPijl]="!geefWeerPijl"></fa>
       <fa name="fal fa-circle" class="col-2" [class.nietWeergevenPijl]="geefWeerPijl"></fa>
 
   </div>
   </div>
+  </div>-->
   <div class="row">
       <h4 class="col-12">{{vraag}}</h4>
   </div>
-  <div class="row" *ngIf="imagePath">
+  <div class="row afbeelding" *ngIf="imagePath">
     <img class="img-responsive" [src]="imagePath">
   </div>
 
@@ -40,25 +41,25 @@
     </div>
   </div>
 </form>
-<div [class.nietWeergeven]="geefWeerOntv">
-    <p class="col-12 melding"><fa name="fas fa-check"></fa> Bedankt, antwoord ontvangen!</p>
+<div [class.nietWeergeven]="geefWeerOntv" class="row">
+    <h6 class="col-12"><fa name="fas fa-check"></fa> Bedankt, antwoord ontvangen!</h6>
 </div>
-<div *ngIf="antwoorden.length">
-<table class="table">
+<div *ngIf="antwoordenHuigeVraag.length">
+<table class="table table-sm">
     <thead>
       <tr>
-        <th scope="col"><button class="btn">Tafel</button></th>
-        <th scope="col"><button class="btn">Juist</button></th>
-        <th scope="col"><button class="btn">Tijd</button></th>
+        <th scope="col" width="60%"><button class="btn">Ploeg</button></th>
+        <th scope="col" width="10%"><button class="btn">J</button></th>
+        <th scope="col" width="30%"><button class="btn">Tijd</button></th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor='let antwoord of antwoorden'>
+      <tr *ngFor='let antwoord of antwoordenHuigeVraag; let j = index'>
         <td>{{antwoord.tafel}}</td>
         <td *ngIf="antwoord.juist"><fa name="fas fa-check-circle"></fa></td>
         <td *ngIf="!antwoord.juist"><fa name="fas fa-window-close"></fa></td>
-        <td *ngIf="antwoord.juist">{{antwoord.tijdstip - eersteAntw | tijdsindicator}}
-          <fa *ngIf='!(antwoord.tijdstip - eersteAntw)' name="fas fa-trophy"></fa></td>
+        <td *ngIf="antwoord.juist">{{antwoord.tijdstip | tijdsindicator:eersteAntw}}
+          <fa *ngIf="j == 0 && antwoord.juist" name="fas fa-trophy"></fa></td>
       </tr>
     </tbody>
   </table>

@@ -1,30 +1,43 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import {AntwoordService} from '../services/antwoord.service';
 import { DataService } from '../services/data.service';
 import {NgForm} from '@angular/forms';
-import { Antwoord } from '../models/antwoord';
+import { Antwoord, Anker, GoogleTijdstip } from '../models/antwoord';
+import { Subscription } from 'rxjs';
 
 
 @Component({
   templateUrl: './vragen-detail.component.html',
   styleUrls: ['./vragen-detail.component.css']
 })
-export class VragenDetailComponent implements OnInit {
-  vraagNummer;
+export class VragenDetailComponent implements OnInit, OnDestroy {
+  vraagNummer: number;
   message:string;
-  errorMessage;
-  eersteAntw;
+  errorMessage: string;
+  eersteAntw: number;
   antwoordFormatted: string;
   vraag: string;
   imagePath: string;
   geefWeerForm: boolean= true;
   geefWeerOntv: boolean= true;
   geefWeerLaden:boolean=false;
-  geefWeerPijl: boolean= true;
+  /*geefWeerPijl: boolean= true;*/
   shaker: boolean= true;
-
+  anker: Anker;
+  subscriptionAnker: Subscription;
+  subscriptionAntwoorden: Subscription;
+  antwoordHTML: string;
   antwoorden: Antwoord[] = [];
+  antwoordenHuigeVraag: Antwoord[] = [];
+  tijdstipG1: GoogleTijdstip;
+  tijdstipG2: GoogleTijdstip;
+
+
+
+
+
+
   antwoord: Antwoord = {
     antwoord: '',
     vraagNr:0,
@@ -33,52 +46,97 @@ export class VragenDetailComponent implements OnInit {
     juist: false,
   };
 
-  antwoordHTML: string;
 
-  constructor(private route: ActivatedRoute,
-    private antwoordService: AntwoordService,
+  constructor(private antwoordService: AntwoordService,
     private data: DataService,
     private router:  Router) { }
 
+  ngOnDestroy() {
+
+    this.subscriptionAnker.unsubscribe();
+    this.subscriptionAntwoorden.unsubscribe();
+
+  }
+
   ngOnInit() {
 
-    this.route.params.subscribe(
-      params => { 
-
-        this.vraagNummer = this.route.snapshot.paramMap.get('vraagNummer');
-
-        this.data.currentMessage
-        .subscribe(message => this.message = message)
-        this.checkPloegNummer(this.message);
-    
-        this.antwoordService.getAntwoordenVraagNr(this.vraagNummer)
+  /*this.subscriptionAntwoorden = this.antwoordService.getAntwoorden()
         .subscribe(
-          antwoorden => { if (antwoorden.length > 0 && antwoorden[0].vraagNr  === this.vraagNummer){
-            this.antwoordVerwerker(antwoorden);
-          }
+          antwoorden => { this.antwoordVerwerker(antwoorden) 
+          },
+          error => this.errorMessage = <any>error
+        );*/
+
+    
+
+  this.subscriptionAnker = this.antwoordService.getAnker().subscribe(x => this.vraagWisselaar(x));
+
+  this.data.currentMessage
+  .subscribe(message => this.message = message)
+  this.checkPloegNummer(this.message);
+
+
+
+  }
+
+  vraagWisselaar(x){
+
+    this.anker = x;
+
+
+    if (this.anker.invulLabel === false) {
+      this.geefWeerForm = true;
+
+    } else  {
+      this.geefWeerForm = false;
+
+    }
+
+
+    if (this.anker.anker > 0 && this.anker.anker < 11) {
+
+      this.laadVraag(this.anker.anker)
+
+    } else if (this.anker.anker === 11) {
+
+      this.router.navigate(['/score']);
+
+  } else {
+    this.router.navigate(['/welkom']);
+
+  }
+
+  if(this.subscriptionAntwoorden) {
+    this.subscriptionAntwoorden.unsubscribe();
+  }
+
+
+  this.subscriptionAntwoorden = this.antwoordService.getAntwoordenVraagNr(this.anker.anker)
+        .subscribe(
+          antwoorden => { this.antwoordVerwerker(antwoorden) 
           },
           error => this.errorMessage = <any>error
         );
 
-        this.vraag = this.vragen[this.vraagNummer-1].omschrijving;
-        this.imagePath = this.vragen[this.vraagNummer-1].foto;
-        this.geefWeerPijl = true;
+}
 
-        this.geefWeerOntv = true;
-        this.geefWeerForm = false;
-        this.geefWeerLaden=true;
-        this.antwoorden = [];
 
-        this.shaker = true;
+
+  laadVraag(vraagnr){
+
+    this.geefWeerLaden=true;
+    this.antwoordHTML = null;
+
+
+    this.vraagNummer = vraagnr;
+    this.vraag = this.vragen[this.vraagNummer-1].omschrijving;
+    this.imagePath = this.vragen[this.vraagNummer-1].foto;
+    /*this.antwoordVerwerker(this.antwoorden);*/
+
+    this.shaker = true;
         setTimeout(() => this.shaker = false, 820);
-      }
-    );
 
   }
-
-  
-
-  
 
 
   checkPloegNummer (message) {
@@ -102,13 +160,15 @@ export class VragenDetailComponent implements OnInit {
       this.antwoord.antwoord = antwoordForm.value.antwoordHTML;
       this.antwoord.vraagNr = this.vraagNummer;
       this.antwoord.tafel = this.message;
-      this.antwoord.tijdstip = Date.now();
   
       this.checkAntwoord(antwoordForm.value.antwoordHTML);
   
       this.antwoordService.setAntwoord(this.antwoord);
   
       this.antwoordHTML = '';
+
+      /*this.geefWeerOntv = false;
+      this.geefWeerForm = true;*/
 
 
     }
@@ -137,36 +197,58 @@ export class VragenDetailComponent implements OnInit {
 
   antwoordVerwerker(antwoorden): void {
 
-    this.antwoorden = [];
     this.antwoorden = antwoorden;
 
-    if (this.antwoorden.find(a => a.tafel === this.message)) {
+    this.antwoordenHuigeVraag = this.antwoorden.filter(a => a.tijdstip);
+
+    if (this.antwoordenHuigeVraag.some(item => item.tafel === this.message)) {
       this.geefWeerOntv = false;
       this.geefWeerForm = true;
-      this.geefWeerLaden=true;
 
     } else {
       this.geefWeerOntv = true;
-      this.geefWeerForm = false;
-      this.geefWeerLaden=true;
     }
 
-
-     this.antwoorden.sort((a,b) => a.tijdstip - b.tijdstip).sort((x,y) => (x.juist === y.juist)? 0 : x.juist? -1 : 1);
+     
+     this.antwoordenHuigeVraag.sort((a,b) => this.sorteerOpJuistTijd(a,b,a.tijdstip,b.tijdstip));
   
 
-    if(this.antwoorden.length > 0) {
-      this.eersteAntw = this.antwoorden[0].tijdstip;
+    if(this.antwoordenHuigeVraag.length > 0) {
+      if(this.antwoordenHuigeVraag[0].tijdstip) {
+        this.eersteAntw = this.antwoordenHuigeVraag[0].tijdstip;
+      }
+
     }
 
+  }
 
+
+  sorteerOpJuistTijd(a, b, c,d) {
+    var Item1 = a.juist;
+    var Item2 = b.juist;
+    if(Item1 != Item2){
+        return (Item2 - Item1);
+    }
+    else{
+      this.tijdstipG1 = c;
+      this.tijdstipG2 = d;
+
+        return ((this.tijdstipG1.seconds*1000+this.tijdstipG1.nanoseconds/1000000) - (this.tijdstipG2.seconds*1000+this.tijdstipG2.nanoseconds/1000000));
+    }
   }
 
 
 
 
 
-  vorigeVraag(): void {
+
+  naarScore(){
+
+      this.router.navigate(['/score'])
+
+  }
+
+    /*vorigeVraag(): void {
 
     this.geefWeerPijl = false;
 
@@ -190,65 +272,66 @@ export class VragenDetailComponent implements OnInit {
     }
 
 
-  }
+  }*/
 
 
-  naarScore(){
-
-      this.router.navigate(['/score'])
-
-  }
-
-
+  
   vragen = [
     {
-      omschrijving: "Voetbalcompetitie",
-      antwoordSleutel: ["super league", "superleague"],
-      foto: "../../assets/voetbal.jpg"
+      omschrijving: "Gele hesjes",
+      antwoordSleutel: ["gilets jaunes", "les gilets jaunes"],
+      foto: "../../assets/geel.JPG"
     },
     {
-      omschrijving: "In welke gemeente hebben Fotis en Stimmi een huis gekocht?",
-      antwoordSleutel: ["boechout", "2530", "boechout"],
-      foto: "../../assets/IMG-20181031-WA0001.jpg"
+      omschrijving: "Google Translate",
+      antwoordSleutel: ["chingrish", "chinglish"],
+      foto: "../../assets/truth.JPG"
     },
     {
       omschrijving: "Japanse term",
-      antwoordSleutel: ["ikebana"]
+      antwoordSleutel: ["ikebana"],
+      foto: "../../assets/ikebana.JPG"
     },
     {
-      omschrijving: "Turnkampioene",
-      antwoordSleutel: ["derwael", "der wael", "derwaal", "der waal", "nina der wael", "nina der waal", "nina derwaal"],
-      foto: "../../assets/ee34f7c0-278c-11e7-858b-4c3c39bb4217_original.jpg"
+      omschrijving: "Elfstedentocht",
+      antwoordSleutel: ["97", "1997", "zevenennegentig","negentienzevenennegentig"],
+      foto: "../../assets/steden.JPG"
     },
     {
-      omschrijving: "Vergeten groente",
+      omschrijving: "Bijzondere groente",
       antwoordSleutel: ["romanesco", "romanesko", "fractoli", "torentjesbloemkool"],
       foto: "../../assets/Romanesco-9-S-D-v-san1-698.jpg"
 
     },
     {
-      omschrijving: "Televisieserie",
-      antwoordSleutel: ["gloria"],
-      foto: "../../assets/200w.gif"
+      omschrijving: "Naam personage",
+      antwoordSleutel: ["herman"],
+      foto: "../../assets/herman.JPG"
     },
     {
-      omschrijving: "Van welke club is Philippe Clement de trainer?",
-      antwoordSleutel: ["genk", "koninklijke racing club genk", "krc genk"]
+      omschrijving: "Videospel",
+      antwoordSleutel: ["empires", "age of empires", "age of empires ii"],
+      foto: "../../assets/aoe.JPG"
     },
     {
-      omschrijving: "In welk jaar werd Koning Filip gekroond?",
-      antwoordSleutel: ["2013"]
+      omschrijving: "Magische steen",
+      antwoordSleutel: ["tesseract", "hyperkubus", "infinity stone","infinity gem","infinity stones","infinity gems","tesserakt"],
+      foto: "../../assets/loki.JPG"
+
     },
     {
-      omschrijving: "Hoe heeft het gevleugelde paard uit de Griekse Mythologie",
-      antwoordSleutel: ["pegasus","pegasos","pegaas"]
+      omschrijving: "Oercontinent",
+      antwoordSleutel: ["pangea","pangaea"],
+      foto: "../../assets/cont.JPG"
+
     },
     {
-      omschrijving: "Wie won de vrouwenderby voetbal van Mortsel op 19/09?",
-      antwoordSleutel: ["fc monas", "monas","monas fc", "de monas"]
+      omschrijving: "Rage op de speelplaats",
+      antwoordSleutel: ["loom", "loem","loem bandjes", "loom bandjes"],
+      foto: "../../assets/loom.JPG"
     }
   ];
-  
+
 
 
 }

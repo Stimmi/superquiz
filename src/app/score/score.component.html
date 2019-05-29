@@ -8,15 +8,15 @@
    <table class="table">
        <thead>
          <tr>
-            <th scope="col"><button class="btn">Rang</button></th>
-           <th scope="col"><button class="btn">Tafel</button></th>
-           <th scope="col"><button class="btn">Score</button></th>
+           <th scope="col" width="10%"><button class="btn">#</button></th>
+           <th scope="col" width="80%"><button class="btn">Tafel</button></th>
+           <th scope="col" width="10%"><button class="btn">Score</button></th>
          </tr>
        </thead>
        <tbody>
          <tr *ngFor='let tafel of tafels index as i'>
            <td>{{i+1}}</td>
-           <td>{{tafel.tafel}}</td>
+           <td>{{tafel.tafel}} ({{tafel.tijd | date:'mm'}}'{{tafel.tijd | date:'ss'}}"{{tafel.tijd | date:'SS'}}ms)</td>
            <td>{{tafel.score}}</td>
        </tbody>
      </table>

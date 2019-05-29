@@ -1,4 +1,5 @@
 import {Pipe, PipeTransform} from '@angular/core';
+import { GoogleTijdstip } from '../models/antwoord';
 
 @Pipe({
     name: 'tijdsindicator'
@@ -16,20 +17,27 @@ export class TijdsIndicator implements PipeTransform {
     digits2;
     sec2:string;
     min2:string;
+    tijdstip: GoogleTijdstip;
+    eersteTijdstip: GoogleTijdstip;
+
+    tussenin:number;
 
     
-    transform(value: number): string {
+    transform(value: any, eerstAntw: any): string {
 
+        this.tijdstip = value;
+        this.eersteTijdstip = eerstAntw;
 
-        this.tijdsVerschil = new Date(value);
+        this.tussenin = (((this.tijdstip.seconds*1000)+(this.tijdstip.nanoseconds/1000000)) - ((this.eersteTijdstip.seconds*1000)+(this.eersteTijdstip.nanoseconds/1000000)));
 
-        this.digits = (""+value).split("");
+        this.digits = (""+ 0 + 0 +this.tussenin).split("");
 
-        this.secondenTimestamp = Math.floor(value/1000);
-        this.minutenTimestamp = Math.floor((value/1000)/60);
+        this.secondenTimestamp = Math.floor(this.tussenin/1000);
+        this.minutenTimestamp = Math.floor((this.tussenin/1000)/60);
 
         this.digits1 = (""+this.secondenTimestamp).split("");
         this.sec2 = this.digits1[this.digits1.length-2];
+
 
         if (parseInt(this.sec2) > 5 || parseInt(this.sec2) === null || this.sec2 === undefined){
             this.sec2 = "0";
@@ -49,7 +57,7 @@ export class TijdsIndicator implements PipeTransform {
         this.min = this.min2 + this.digits2[this.digits2.length-1] +'\' ';
 
 
-        if (value === 0) {
+        if (this.tussenin === 0) {
 
             return "";
 

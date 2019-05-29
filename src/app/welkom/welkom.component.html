@@ -1,19 +1,11 @@
-<div class="container">
-  <div class="row">
-    <button class="col-5 offset-1 btn">Vragen</button>
-    <button class="col-5 btn">Resultaten</button>
-  </div>
-  <div class="row">
-    <p class="col-8 offset-3">Selecteer de vraag</p>
-  </div>
-  <div class="row">
-      <select class="col-4 offset-4 btn">Ga Verder
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-      </select>
-  </div>
-  <div class="row">
-      <button class="col-4 offset-4 btn">Ga Verder</button>
+<div class="container"> 
+ <div class="row">
+    <div class="col-12">
+        <p>Even geduld, de quiz start zo dadelijk</p>
+    </div>
+  <div class="row text-center">
+    <div *ngFor='let afbeelding of afbeeldingen; let i = index' class="col-4">
+        <img src="../../assets/vos{{afbeelding.foto}}.png" (click)="klikIMG($event)" id={{i}} [class.omgekeerd]="afbeelding.omgekeerd">
+    </div>
   </div>
 </div>

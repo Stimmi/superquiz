@@ -1,0 +1,27 @@
+  <div class="container">
+    <div class="row">
+      <p class="col-8 offset-2 btn">Huidige vraag is {{huidigeVraag}} - {{antwoordenMogelijk}}</p>
+    </div>
+
+   <div class="row pijlen">
+    <div class="col-3">
+      <fa (click)='vorigeVraag()' name="arrow-circle-left" class="col-3"></fa>
+    </div>
+
+          <p class="col-6">Volgende vraag is {{gaNaarVraag}}</p>
+
+    <div class="col-3">
+        <fa (click)='volgendeVraag()' name="arrow-circle-right" class="col-3"></fa>  
+    </div>
+  </div>
+        <div class="row">
+          <button (click)="setAnker()" class="col-8 offset-2 btn" style="margin-bottom: 15px">Ga Verder</button>
+        </div>
+        <div class="row">
+          <button (click)="setAnkerTrue()" class="col-8 offset-2 btn" style="margin-bottom: 15px">Antwoorden mogelijk</button>
+        </div>
+</div>
+
+<div style="text-align:center">
+  <h5>Ontwikkeld door <a href="https://www.linkedin.com/in/vincent-reynaert-4495ab123/" target="_blank">VR</a></h5>
+</div>
