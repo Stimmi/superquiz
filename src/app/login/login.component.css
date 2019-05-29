@@ -4,7 +4,7 @@ p {
 }
 
 input, select {
-    background-color: white;
+    background-color: red;
     margin-top: 10px;
     color: #F65F40;
 }
