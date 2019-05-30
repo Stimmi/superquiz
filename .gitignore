@@ -39,4 +39,4 @@ testem.log
 Thumbs.db
 
 #Google Api Keys
-/environments
+/src/environments
