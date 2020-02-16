@@ -1,4 +1,4 @@
-<div class="container">
+<div>
 
   <div class="row titelVraag" [class.shaker]="shaker"> 
   <h6 class="col-12">Vraag {{vraagNummer}}</h6>
@@ -15,18 +15,7 @@
     <fa name="spinner" animation="spin" class="col-1 offset-5"></fa>
   </div>
   <div>
-  <form (ngSubmit)="antwoordFunctie(antwoordForm)" #antwoordForm="ngForm" [class.nietWeergeven]="geefWeerForm"
-   class="form-inline">
-  <div class="form-group col-10">
-            <input class="form-control" [value]="antwoordHTML" minlength="1" 
-            name="antwoordHTML" [(ngModel)]="antwoordHTML" placeholder="..." autocomplete="off">
-  </div>
-    <button type="submit" class="btn col-2 send" formmethod="POST"><fa name="fas fa-arrow-circle-right" class="sendd"></fa></button>
 
-</form>
-<div [class.nietWeergeven]="geefWeerOntv" class="row">
-    <h6 class="col-12"><fa name="fas fa-check"></fa> Bedankt, antwoord ontvangen!</h6>
-</div>
 <div *ngIf="antwoordenHuigeVraag.length">
 <table class="table table-sm">
     <thead>

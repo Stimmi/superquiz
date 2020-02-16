@@ -10,9 +10,9 @@
 
 * {
   font-family: LeagueGothic;
-    color: white;
+    color: rgb(236,78,82);
     font-size: 20px;
-    background-color: #6948E1;
+    background-color: rgb(225,238,195);
 
 }
 
@@ -20,7 +20,8 @@
 button {
   margin-right: 5px;
   margin-top: 10px;
-  background-color: #F65F40;
+  background-color: rgb(247,212,32);
+  color: white;
 }
 
 h5 {

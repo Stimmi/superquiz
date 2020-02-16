@@ -17,6 +17,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { ScoreComponent } from './score/score.component';
 import { AdminComponent } from './admin/admin.component';
+import { PresentationComponent } from './presentation/presentation.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { AdminComponent } from './admin/admin.component';
     VragenDetailComponent,
     TijdsIndicator,
     ScoreComponent,
-    AdminComponent
+    AdminComponent,
+    PresentationComponent,
       ],
   imports: [
     BrowserModule,
@@ -42,6 +44,7 @@ import { AdminComponent } from './admin/admin.component';
       {path: 'vragen', component: VragenDetailComponent}, 
       {path: 'score', component: ScoreComponent},
       {path: 'badmin', component: AdminComponent},
+      {path: 'presentation', component: PresentationComponent},
       {path: '', redirectTo: 'login', pathMatch: 'full'}, // standaard naar login pagina
       {path: 'welkom', component: WelkomComponent},
       {path: '**', redirectTo: 'login', pathMatch: 'full'} // indien foute route

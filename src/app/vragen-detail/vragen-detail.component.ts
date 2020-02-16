@@ -27,15 +27,13 @@ export class VragenDetailComponent implements OnInit, OnDestroy {
   anker: Anker;
   subscriptionAnker: Subscription;
   subscriptionAntwoorden: Subscription;
+  subscriptionQuestions: Subscription;
   antwoordHTML: string;
   antwoorden: Antwoord[] = [];
   antwoordenHuigeVraag: Antwoord[] = [];
   tijdstipG1: GoogleTijdstip;
   tijdstipG2: GoogleTijdstip;
-
-
-
-
+  questions: any[];
 
 
   antwoord: Antwoord = {
@@ -55,6 +53,7 @@ export class VragenDetailComponent implements OnInit, OnDestroy {
 
     this.subscriptionAnker.unsubscribe();
     this.subscriptionAntwoorden.unsubscribe();
+    this.subscriptionQuestions.unsubscribe();
 
   }
 
@@ -70,12 +69,11 @@ export class VragenDetailComponent implements OnInit, OnDestroy {
     
 
   this.subscriptionAnker = this.antwoordService.getAnker().subscribe(x => this.vraagWisselaar(x));
+  this.subscriptionQuestions = this.data.currentQuestions.subscribe(y => this.setQuestions(y));
 
   this.data.currentMessage
   .subscribe(message => this.message = message)
   this.checkPloegNummer(this.message);
-
-
 
   }
 
@@ -129,8 +127,8 @@ export class VragenDetailComponent implements OnInit, OnDestroy {
 
 
     this.vraagNummer = vraagnr;
-    this.vraag = this.vragen[this.vraagNummer-1].omschrijving;
-    this.imagePath = this.vragen[this.vraagNummer-1].foto;
+    this.vraag = this.questions[this.vraagNummer-1].omschrijving;
+    this.imagePath = this.questions[this.vraagNummer-1].foto;
     /*this.antwoordVerwerker(this.antwoorden);*/
 
     this.shaker = true;
@@ -183,11 +181,11 @@ export class VragenDetailComponent implements OnInit, OnDestroy {
     this.antwoordFormatted = antwoord.toString().toLowerCase().trim();
 
 
-    if(this.vragen[this.vraagNummer-1].antwoordSleutel.includes(this.antwoordFormatted)){
+    if(this.questions[this.vraagNummer-1].antwoordSleutel.includes(this.antwoordFormatted)){
       this.antwoord.juist = true;
     };
 
-    if(this.antwoordFormatted.includes(this.vragen[this.vraagNummer-1].antwoordSleutel[0])) {
+    if(this.antwoordFormatted.includes(this.questions[this.vraagNummer-1].antwoordSleutel[0])) {
       this.antwoord.juist = true;
     };
 
@@ -238,100 +236,17 @@ export class VragenDetailComponent implements OnInit, OnDestroy {
   }
 
 
-
-
-
-
   naarScore(){
 
       this.router.navigate(['/score'])
 
   }
 
-    /*vorigeVraag(): void {
+  setQuestions(y) {
 
-    this.geefWeerPijl = false;
-
-    if(parseInt(this.vraagNummer) === 1) {
-      this.router.navigate(['/welkom/', 10])
-    } else {
-      this.router.navigate(['/welkom/', parseInt(this.vraagNummer)-1])
-    }
+    this.questions = y;
 
   }
-
-  volgendeVraag(): void {
-
-    this.geefWeerPijl = false;
-
-
-    if(parseInt(this.vraagNummer) === 10) {
-      this.router.navigate(['/welkom/', 1])
-    } else {
-      this.router.navigate(['/welkom/', parseInt(this.vraagNummer)+1])
-    }
-
-
-  }*/
-
-
-  
-  vragen = [
-    {
-      omschrijving: "Gele hesjes",
-      antwoordSleutel: ["gilets jaunes", "les gilets jaunes"],
-      foto: "../../assets/geel.JPG"
-    },
-    {
-      omschrijving: "Google Translate",
-      antwoordSleutel: ["chingrish", "chinglish"],
-      foto: "../../assets/truth.JPG"
-    },
-    {
-      omschrijving: "Japanse term",
-      antwoordSleutel: ["ikebana"],
-      foto: "../../assets/ikebana.JPG"
-    },
-    {
-      omschrijving: "Elfstedentocht",
-      antwoordSleutel: ["97", "1997", "zevenennegentig","negentienzevenennegentig"],
-      foto: "../../assets/steden.JPG"
-    },
-    {
-      omschrijving: "Bijzondere groente",
-      antwoordSleutel: ["romanesco", "romanesko", "fractoli", "torentjesbloemkool"],
-      foto: "../../assets/Romanesco-9-S-D-v-san1-698.jpg"
-
-    },
-    {
-      omschrijving: "Naam personage",
-      antwoordSleutel: ["herman"],
-      foto: "../../assets/herman.JPG"
-    },
-    {
-      omschrijving: "Videospel",
-      antwoordSleutel: ["empires", "age of empires", "age of empires ii"],
-      foto: "../../assets/aoe.JPG"
-    },
-    {
-      omschrijving: "Magische steen",
-      antwoordSleutel: ["tesseract", "hyperkubus", "infinity stone","infinity gem","infinity stones","infinity gems","tesserakt"],
-      foto: "../../assets/loki.JPG"
-
-    },
-    {
-      omschrijving: "Oercontinent",
-      antwoordSleutel: ["pangea","pangaea"],
-      foto: "../../assets/cont.JPG"
-
-    },
-    {
-      omschrijving: "Rage op de speelplaats",
-      antwoordSleutel: ["loom", "loem","loem bandjes", "loom bandjes"],
-      foto: "../../assets/loom.JPG"
-    }
-  ];
-
 
 
 }
